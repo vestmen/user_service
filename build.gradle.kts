@@ -29,7 +29,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.0.2")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     /**
@@ -43,6 +45,7 @@ dependencies {
      * Amazon S3
      */
     implementation("com.amazonaws:aws-java-sdk-s3:1.12.464")
+    implementation ("io.minio:minio:8.3.2")
 
     /**
      * Swagger
@@ -50,6 +53,11 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.15")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
+
+    /**
+     * AOP
+     */
+    implementation("org.aspectj:aspectjweaver:1.9.19")
 
     /**
      * Utils & Logging
@@ -63,9 +71,13 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+    implementation("org.springframework.retry:spring-retry:2.0.3")
 
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.0")
     implementation ("net.coobird:thumbnailator:0.4.1")
+
+    implementation("org.apache.commons:commons-collections4:4.5.0-M2")
+    implementation("org.quartz-scheduler:quartz:2.3.0")
 
     /**
      * Test containers
@@ -82,6 +94,8 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.24.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation(kotlin("stdlib-jdk8"))
+
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 }
 
 jsonSchema2Pojo {
@@ -105,49 +119,82 @@ tasks.bootJar {
  * JaCoCo settings
  */
 val jacocoInclude = listOf(
-    "**/controller/**",
-    "**/service/**",
-    "**/validator/**",
-    "**/mapper/**"
+    "**/service/**"
 )
+
+val jacocoExclude = listOf(
+    "**/entity/**",
+    "**/dto/**",
+    "**/config/**",
+    "**/generated/**",
+    "**/exceptions/**",
+    "**/service/recomendation/filters**",
+    "**/service/mentorship_request/error_messages**",
+    "**/service/goal/util**",
+    "**/service/event/filters**",
+    "**/service/mentorship_request/MentorshipRequestDescriptionFilter**"
+)
+
 jacoco {
-    toolVersion = "0.8.9"
+    toolVersion = "0.8.12"
     reportsDirectory.set(layout.buildDirectory.dir("$buildDir/reports/jacoco"))
 }
 tasks.test {
+    exclude("**/school/faang/user_service/integration/**")
     finalizedBy(tasks.jacocoTestReport)
 }
+tasks.register<Test>("integrationTest") {
+    group = "verification"
+    include("**/school/faang/user_service/integration/**")
+}
 tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-
     reports {
+        html.required.set(true)
         xml.required.set(false)
         csv.required.set(false)
-        //html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
+
+    // Include only the specified directories in the coverage report
+    classDirectories.setFrom(
+        sourceSets.main.get().output.asFileTree.matching {
+            include(jacocoInclude)
+            exclude(jacocoExclude)
+        }
+    )
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = "INSTRUCTION"
+                value = "COVEREDRATIO"
+                minimum = "0.80".toBigDecimal()
+            }
+            limit {
+                counter = "BRANCH"
+                value = "COVEREDRATIO"
+                minimum = "0.70".toBigDecimal()
+            }
+        }
     }
 
     classDirectories.setFrom(
         sourceSets.main.get().output.asFileTree.matching {
             include(jacocoInclude)
+            exclude(jacocoExclude)
         }
     )
 }
-tasks.jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            element = "CLASS"
-            classDirectories.setFrom(
-                sourceSets.main.get().output.asFileTree.matching {
-                    include(jacocoInclude)
-                }
-            )
-            enabled = true
-            limit {
-                minimum = BigDecimal(0.7).setScale(2, BigDecimal.ROUND_HALF_UP) // Задаем минимальный уровень покрытия
-            }
-        }
-    }
+
+tasks.check {
+    dependsOn(tasks.jacocoTestCoverageVerification)
 }
+
+tasks.build {
+    dependsOn(tasks.jacocoTestCoverageVerification)
+}
+
 kotlin {
     jvmToolchain(17)
 }

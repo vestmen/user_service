@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${ENV_JDBC_URL}
+    username: ${ENV_JDBC_USERNAME}
+    password: ${ENV_JDBC_PASSWORD}
+  data:
+    redis:
+      host: ${ENV_REDIS_HOST}
+      port: ${ENV_REDIS_PASSWORD}
