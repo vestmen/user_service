@@ -1,0 +1,12 @@
+package user_service.service.goal.filter.invitation;
+
+import user_service.dto.goal.InvitationFilterDto;
+import user_service.entity.goal.GoalInvitation;
+
+import java.util.stream.Stream;
+
+public interface InvitationFilter {
+    boolean isApplicable(InvitationFilterDto filters);
+
+    Stream<GoalInvitation> apply(Stream<GoalInvitation> invitations, InvitationFilterDto filters);
+}
