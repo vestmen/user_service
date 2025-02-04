@@ -15,7 +15,7 @@ import user_service.dto.goal.GoalFilterDto;
 import user_service.dto.goal.GoalResponseDto;
 import user_service.dto.goal.UpdateGoalDto;
 import user_service.entity.goal.Goal;
-import user_service.mapping.GoalMapper;
+import user_service.mapper.goal.GoalMapper;
 import user_service.service.goal.GoalService;
 
 import java.util.List;
