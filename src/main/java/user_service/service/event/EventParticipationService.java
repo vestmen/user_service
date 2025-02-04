@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import user_service.entity.User;
-import user_service.exceptions.EventRegistrationException;
+import user_service.exception.EventRegistrationException;
 import user_service.repository.event.EventParticipationRepository;
 
 @Service

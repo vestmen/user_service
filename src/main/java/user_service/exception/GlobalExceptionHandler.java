@@ -17,7 +17,6 @@ import user_service.exception.mentorship_request.RequestToHimselfException;
 import user_service.exception.recomendation.request.RecommendationRequestNotFoundException;
 import user_service.exception.recomendation.request.RecommendationRequestRejectException;
 import user_service.exception.user.UserDeactivatedException;
-import user_service.exceptions.EventRegistrationException;
 
 import java.util.Map;
 import java.util.Objects;

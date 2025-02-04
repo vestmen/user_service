@@ -1,4 +1,4 @@
-package user_service.mapping;
+package user_service.mapper.goal;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

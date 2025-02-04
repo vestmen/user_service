@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import user_service.entity.User;
-import user_service.exceptions.EventRegistrationException;
+import user_service.exception.EventRegistrationException;
 import user_service.repository.event.EventParticipationRepository;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
