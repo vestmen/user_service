@@ -11,7 +11,7 @@ import user_service.dto.goal.GoalInvitationDto;
 import user_service.dto.goal.InvitationFilterDto;
 import user_service.entity.RequestStatus;
 import user_service.entity.goal.GoalInvitation;
-import school.faang.user_service.mapper.goal.GoalInvitationMapperImpl;
+import user_service.mapper.goal.GoalInvitationMapperImpl;
 import user_service.service.goal.GoalInvitationService;
 
 import java.util.List;

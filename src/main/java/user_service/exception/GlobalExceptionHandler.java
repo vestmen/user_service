@@ -60,7 +60,8 @@ public class GlobalExceptionHandler {
             RecommendationRequestRejectException.class,
             UserAlreadyExistsException.class,
             InvitationCheckException.class,
-            RequestToHimselfException.class
+            RequestToHimselfException.class,
+            OfferedSkillException.class
     })
     @ResponseStatus(CONFLICT)
     public ErrorResponse handleConflictExceptions(RuntimeException ex) {

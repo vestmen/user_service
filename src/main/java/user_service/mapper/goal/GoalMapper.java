@@ -22,7 +22,7 @@ import java.util.List;
 )
 public interface GoalMapper {
 
-    @Mapping(target = "status", expression = "java(school.faang.user_service.entity.goal.GoalStatus.ACTIVE)")
+    @Mapping(target = "status", expression = "java(user_service.entity.goal.GoalStatus.ACTIVE)")
     Goal toEntity(CreateGoalDto dto);
 
     @Mapping(target = "id", source = "goalId")
